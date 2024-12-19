@@ -1,0 +1,29 @@
+.navigation {
+  width: 100%;
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  height: 65px;
+  justify-content: center;
+  align-items: center;
+  background-color: #fcfcfc;
+  gap: 30px;
+
+  &__link {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    &-img {
+      width: 35px;
+      height: 35px;
+      align-self: center;
+    }
+    &-text {
+      font-size: 12px;
+      word-break: break-all;
+      color: #837ecb;
+    }
+  }
+}

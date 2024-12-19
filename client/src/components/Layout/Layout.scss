@@ -1,0 +1,13 @@
+.layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: start;
+  &__container {
+    display: flex;
+    flex: 1;
+    width: 370px;
+    margin: 0 auto;
+  }
+}
