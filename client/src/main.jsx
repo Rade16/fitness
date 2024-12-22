@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import {
   RouterProvider,
@@ -14,6 +14,39 @@ import Profile from "./screens/Profile/Profile";
 import SubscriptionStart from "./screens/subscriptionStart/subscriptionStart";
 import SubscriptionMedium from "./screens/subscriptionMedium/subscriptionMedium";
 import SubscriptionPremium from "./screens/subscriptionPremium/subscriptionPremium";
+import GymPage from "./components/GymPage/GymPage";
+import Admin from "./screens/Admin/Admin";
+import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from "./context/AuthContext";
+import axios from "axios";
+const App = () => {
+  const { user, setUser } = useAuth();
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await axios.get(
+          "http://localhost:5000/api/auth/auth",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        console.log(response.data.user);
+        setUser(response.data.user);
+      } catch (error) {
+        console.error("Ошибка аутентификации:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [setUser]);
+
+  return <RouterProvider router={router} />;
+};
+
 import "./sass/main.scss";
 const router = createBrowserRouter([
   {
@@ -57,12 +90,20 @@ const router = createBrowserRouter([
         path: "/user/subscriptionPremium",
         element: <SubscriptionPremium />,
       },
+      {
+        path: "/user/Admin",
+        element: <Admin />,
+      },
+      {
+        path: "/user/gym/:id",
+        element: <GymPage />,
+      },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  <AuthProvider>
+    <App />
+  </AuthProvider>
 );

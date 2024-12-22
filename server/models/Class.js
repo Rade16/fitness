@@ -11,7 +11,7 @@ const Class = sequelize.define("class", {
     allowNull: false,
   },
   days: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
+    type: DataTypes.STRING,
     allowNull: false,
   },
 });

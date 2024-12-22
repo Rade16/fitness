@@ -6,7 +6,7 @@ const Gym = sequelize.define("gym", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  address: {
+  adress: {
     type: DataTypes.STRING,
     allowNull: false,
   },

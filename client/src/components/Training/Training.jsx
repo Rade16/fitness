@@ -1,18 +1,18 @@
 import React from "react";
 import "./Training.scss";
-const Training = () => {
+const Training = (obj) => {
   return (
     <div className="training">
-      <p className="training__time">14:30</p>
-      <p className="training__name">SPLIT Спина&Руки</p>
+      <p className="training__time">{obj.time}</p>
+      <p className="training__name">{obj.name}</p>
       <p className="training__text">Когда:</p>
       <div className="training__days">
         <div className="training__days-day">
-          <p className="training__days-day-text">пн</p>
+          <p className="training__days-day-text">{obj.day}</p>
         </div>
-        <div className="training__days-day">
+        {/* <div className="training__days-day">
           <p className="training__days-day-text">вт</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

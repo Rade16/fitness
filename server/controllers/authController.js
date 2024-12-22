@@ -1,4 +1,4 @@
-const { User, Post, Favorite } = require("./../models/index");
+const { User } = require("./../models/index");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
@@ -93,21 +93,39 @@ class AuthController {
 
   async updateUser(req, res) {
     try {
+      console.log("Получен запрос на обновление:", req.params.id, req.body);
+      const { id } = req.params;
       const { username, email } = req.body;
-
       const avatar = req.file ? `/uploads/${req.file.filename}` : null;
-      const user = await User.findOne({ where: { id: req.params.id } });
+
+      const user = await User.findByPk(id);
+
       if (!user) {
         return res.status(404).json({ message: "Пользователь не найден" });
       }
 
-      await user.update({ username, email, avatar });
+      if (username && username.trim() !== "" && username !== user.username) {
+        const existingUsername = await User.findOne({ where: { username } });
+        if (existingUsername) {
+          return res.status(400).json({ message: "Имя пользователя занято" });
+        }
+        user.username = username;
+      }
+
+      if (email && email.trim() !== "" && email !== user.email) {
+        user.email = email;
+      }
+
+      if (avatar) {
+        user.avatar = avatar;
+      }
+
+      await user.save();
+
       return res.json({ message: "Пользователь успешно обновлен" });
-    } catch (e) {
-      console.log(e);
-      return res
-        .status(400)
-        .json({ message: "Ошибка при обновлении пользователя" });
+    } catch (error) {
+      console.error("Error in updateUser:", error);
+      return res.status(500).json({ message: "Internal server error", error });
     }
   }
   async auth(req, res) {

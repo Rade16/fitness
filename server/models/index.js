@@ -1,4 +1,4 @@
-const sequelize = require("./db");
+const sequelize = require("../db");
 const { User } = require("./User");
 const { Gym } = require("./Gym");
 const { MembershipType } = require("./MembershipType");

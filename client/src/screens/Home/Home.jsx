@@ -1,10 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Home.scss";
 import time from "../../assets/Group 2.svg";
 import qr from "../../assets/home/qr.svg";
 import { Link } from "react-router-dom";
 import { YMaps, Map, RouteButton, Placemark } from "@pbe/react-yandex-maps";
+import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const Home = () => {
+  const { user } = useAuth();
+  const [gyms, setGyms] = useState([]);
+  if (!user) return <p>Загрузка...</p>;
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchGyms = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/gym/getAll"
+        );
+        setGyms(response.data);
+        console.log(gyms);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchGyms();
+  }, []);
   return (
     <div className="home">
       <div className="home__container">
@@ -34,7 +56,12 @@ const Home = () => {
                 width={"100%"}
                 height={"300px"}
               >
-                <Placemark />
+                {gyms.map((gym) => (
+                  <Placemark
+                    geometry={[gym.latitude, gym.longitude]}
+                    onClick={() => navigate(`/user/gym/${gym.id}`)}
+                  />
+                ))}
               </Map>
             </YMaps>
           </div>

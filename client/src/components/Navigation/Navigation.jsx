@@ -6,7 +6,10 @@ import workout from "../../assets/navigation/workout.svg";
 import profile from "../../assets/navigation/profile.svg";
 
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 const Navigation = () => {
+  const { user } = useAuth();
+  if (!user) return <p>Загрузка...</p>;
   return (
     <div className="navigation">
       <Link to={"/user/home"}>
@@ -27,6 +30,14 @@ const Navigation = () => {
           <p className="navigation__link-text">Профиль</p>
         </div>
       </Link>
+      {user.role === "admin" && (
+        <Link to={"/user/admin"}>
+          <div className="navigation__link">
+            <img src={profile} alt="" className="navigation__link-img" />
+            <p className="navigation__link-text">Админ</p>
+          </div>
+        </Link>
+      )}
     </div>
   );
 };
