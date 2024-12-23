@@ -15,6 +15,7 @@ import SubscriptionStart from "./screens/subscriptionStart/subscriptionStart";
 import SubscriptionMedium from "./screens/subscriptionMedium/subscriptionMedium";
 import SubscriptionPremium from "./screens/subscriptionPremium/subscriptionPremium";
 import GymPage from "./components/GymPage/GymPage";
+import QRcode from "./screens/QRcode/QRcode";
 import Admin from "./screens/Admin/Admin";
 import { AuthProvider } from "./context/AuthContext";
 import { useAuth } from "./context/AuthContext";
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
       {
         path: "/user/gym/:id",
         element: <GymPage />,
+      },
+      {
+        path: "/user/QR",
+        element: <QRcode />,
       },
     ],
   },

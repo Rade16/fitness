@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Profile.scss";
 import time from "../../assets/Group 2.svg";
 import addImage from "../../assets/profile/image.svg";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { differenceInDays } from "date-fns";
 const Profile = () => {
   const { user } = useAuth();
   if (!user) return <p>Загрузка...</p>;
@@ -12,6 +13,13 @@ const Profile = () => {
   const [previewAvatar, setPreviewAvatar] = useState(null);
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
+  const [membership, setMembership] = useState(null);
+  const [gyms, setGyms] = useState([]);
+  const daysLeft = membership
+    ? differenceInDays(new Date(membership.endDate), new Date())
+    : null;
+
+  console.log(daysLeft);
 
   const formData = new FormData();
   formData.append("avatar", avatar);
@@ -43,17 +51,51 @@ const Profile = () => {
     setPreviewAvatar(URL.createObjectURL(file));
   };
 
+  useEffect(() => {
+    const fetchMembership = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/membership/current/${user.id}`
+        );
+        setMembership(response.data);
+      } catch (error) {
+        console.error("Ошибка при получении абонемента:", error);
+      }
+    };
+
+    fetchMembership();
+  }, [user.id]);
   return (
     <div className="profile">
       <div className="profile__container">
-        <div className="profile__subscription">
-          <div className="profile__subscription-text">
-            <h1 className="profile__subscription-title">PREMIUM Абонемент</h1>
-            <p className="profile__subscription-price">3500 ₽</p>
-          </div>
-          <div className="profile__subscription-time">
-            <img src={time} alt="" />
-          </div>
+        <div
+          className={`home__subscription ${
+            membership
+              ? membership.type.toLowerCase() // Конвертация типа в lowercase для соответствия классам
+              : "no-membership"
+          }`}
+        >
+          {membership ? (
+            <>
+              <div className="home__subscription-text">
+                <h1 className="home__subscription-title">
+                  {membership.type} Абонемент
+                </h1>
+                <p className="home__subscription-price">{membership.price} ₽</p>
+                <p className="home__subscription-days">
+                  {daysLeft > 0 ? "" : "абонемент закончился"}
+                </p>
+              </div>
+              <div className="home__subscription-time">
+                {daysLeft > 0 ? `${daysLeft} ` : "0"}
+                <p className="home__subscription-time-text">дней</p>
+              </div>
+            </>
+          ) : (
+            <p className="home__subscription-no-membership">
+              Абонемент не найден.
+            </p>
+          )}
         </div>
 
         <form action="" className="profile__form" onSubmit={handleSubmit}>

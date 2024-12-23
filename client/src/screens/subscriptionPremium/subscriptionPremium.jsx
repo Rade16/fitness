@@ -1,7 +1,25 @@
 import React from "react";
 import "./subscriptionPremium.scss";
 import circle from "../../assets/subsctiptions/circleBlue.svg";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 const subscriptionPremium = () => {
+  const { user } = useAuth();
+  const handleBuyMembership = async (membershipTypeId) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/membership/buy",
+        {
+          userId: user.id,
+          membershipTypeId,
+        }
+      );
+      alert(response.data.message);
+    } catch (error) {
+      console.error(error);
+      alert("Ошибка при покупке абонемента");
+    }
+  };
   return (
     <div className="subscriptionPremium">
       <div className="subscriptionPremium__container">
@@ -66,7 +84,10 @@ const subscriptionPremium = () => {
             </li>
           </ul>
 
-          <button className="subscriptionPremium__main-button">
+          <button
+            className="subscriptionPremium__main-button"
+            onClick={() => handleBuyMembership(3)}
+          >
             Приобрести
           </button>
         </div>

@@ -9,7 +9,7 @@ const MembershipType = sequelize.define("membership_type", {
   price: {
     type: DataTypes.INTEGER,
     allowNull: false,
-  },  
+  },
   duration: {
     type: DataTypes.INTEGER,
     allowNull: false,
